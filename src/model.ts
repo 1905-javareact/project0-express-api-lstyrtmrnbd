@@ -1,4 +1,6 @@
 
+export { User, Role, Reimbursement, Status, ReimbursementType }
+
 class User {
     userId: number     // primary key
     username: string   // not null, unique
