@@ -40,3 +40,22 @@ usersRouter.get('/:id', (req, res, next) => {
             res.status(404).send(`User of id ${id} not found`);
     }
 });
+
+// Update User
+usersRouter.patch('', (req, res, next) => {
+
+    const valid = validateRole(req, roles.admin);
+    const newUser = req.body;
+    const oldUser = users.find(usr => usr.userId === newUser.userId);
+
+    if (!valid) res.sendStatus(401);
+
+    if (!oldUser) {
+
+        res.status(404).send(`User of id ${newUser.userId} not found`);
+    } else {
+
+        for (let field in newUser) { oldUser[field] = oldUser[field] && newUser[field]; }
+        res.send(oldUser);
+    }
+});
