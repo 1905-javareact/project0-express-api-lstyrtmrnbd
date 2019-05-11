@@ -3,6 +3,8 @@ import express from 'express'
 import { Role } from './model'
 import { roles, users } from './state'
 
+export { validateUser, validateRole }
+
 export const usersRouter = express.Router();
 
 function validateUser(req, id: number): boolean {

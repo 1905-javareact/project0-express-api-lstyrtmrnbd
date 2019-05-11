@@ -1,7 +1,7 @@
-import { User, Role } from './model'
+import { User, Role, Reimbursement } from './model'
 
 // Test state
-export { roles, users }
+export { roles, users, reimbursements, reimCount }
 
 let roles = {
 
@@ -10,10 +10,15 @@ let roles = {
     finMan: new Role(2, 'finance-manager')
 }
 
-let users = [
+const users: User[] = [
 
     new User(0, 'admin0', 'password', 'Super', 'User', 'admin@organization.org', roles.admin),
     new User(1, 'user0', 'password', 'John', 'Smith', 'peon@organization.org', roles.user),
     new User(2, 'overseer', 'password', 'Sadie', 'Stick', 'taskmaster@organization.org', roles.finMan)
 
+];
+
+const reimbursements: Reimbursement[] = [
+
+    new Reimbursement(0, 0, 6.66, 1557532800, 1557532801, 'toothpaste', 2, 2, 3)
 ];

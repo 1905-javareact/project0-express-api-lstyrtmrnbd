@@ -41,17 +41,50 @@ class Reimbursement {
     dateResolved: number      // not null
     description: string       // not null
     resolver: number          // foreign key -> User
-    status: number            // foreign ey -> ReimbursementStatus, not null
-    _type: number // foreign key -> ReimbursementType
+    status: number            // foreign key -> ReimbursementStatus, not null
+    _type: number             // foreign key -> ReimbursementType
+
+    constructor(id: number, author: number, amount: number, dateSub: number, dateRes: number, desc: string, resolver: number, status: number, typ: number) {
+
+        this.reimbursementId = id;
+        this.author = author;
+        this.amount = amount;
+        this.dateSubmitted = dateSub;
+        this.dateResolved = dateRes;
+        this.description = desc;
+        this.resolver = resolver;
+        this.status = status;
+        this._type = typ;
+    }
+
+    isValid(): boolean {
+
+        for (const val of this) {
+            if (val === null) return false;
+        }
+        return true;
+    }
 }
 
 class Status {
     statusId: number // primary key
     status: string   // not null, unique
+
+    constructor(id: number, status: string) {
+
+        this.statusId = id;
+        this.status = status;
+    }
 }
 
 class ReimbursementType {
     typeId: number // primary key
-    _type: string // not null, unique
+    _type: string  // not null, unique
+
+    constructor(id: number, typ: string) {
+
+        this.typeId = id;
+        this._type = typ;
+    }
 }
 
