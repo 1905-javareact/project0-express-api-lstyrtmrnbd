@@ -9,11 +9,28 @@ class User {
     lastName: string   // not null
     email: string      // not null
     role: Role         // not null
+
+    constructor(uid: number, uname: string, passwd: string, first: string, last: string, email: string, role: Role) {
+
+        this.userId = uid;
+        this.username = uname;
+        this.password = passwd;
+        this.firstName = first;
+        this.lastName = last;
+        this.email = email;
+        this.role = role;
+    }
 }
 
 class Role {
     roleId: number     // primary key
     role: string       // not null, unique
+
+    constructor(roleId: number, role: string) {
+
+        this.roleId = roleId;
+        this.role = role;
+    }
 }
 
 class Reimbursement {
