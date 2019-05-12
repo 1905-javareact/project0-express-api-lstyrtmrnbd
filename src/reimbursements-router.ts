@@ -29,7 +29,7 @@ reimbursementsRouter.get('', (req, res, next) => {
 // Find Reimbursements By Status
 reimbursementsRouter.get('/status/:statusId', (req, res, next) => {
 
-    const id = req.params.statusId;
+    const id = parseInt(req.params.statusId);
     const valid = validateRole(req, roles.finMan);
 
     if (!valid) {
@@ -53,7 +53,7 @@ reimbursementsRouter.get('/status/:statusId', (req, res, next) => {
 // Find Reimbursements By User
 reimbursementsRouter.get('/author/userId/:userId', (req, res, next) => {
 
-    const id = req.params.userId;
+    const id = parseInt(req.params.userId);
     const valid = validateRole(req, roles.finMan) || validateUser(req, id);
 
     if (!valid) {
