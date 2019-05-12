@@ -4,6 +4,7 @@ import bodyParser from 'body-parser'
 import { middleLog, middleSes } from './middle'
 import { handleLogin } from './handlers'
 import { usersRouter } from './users-router'
+import { reimbursementsRouter } from './reimbursements-router'
 
 //// Expenditure Reimbursement API
 
@@ -17,7 +18,7 @@ exp.use(middleSes);
 
 exp.post('/login', handleLogin);
 exp.use('/users', usersRouter);
-
+exp.use('/reimbursements', reimbursementsRouter);
 /// Init
 
 const portNo = 6666; // AV loves this

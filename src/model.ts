@@ -1,5 +1,5 @@
 
-export { User, Role, Reimbursement, Status, ReimbursementType }
+export { User, Role, Reimbursement, ReimbursementStatus, ReimbursementType }
 
 class User {
     userId: number     // primary key
@@ -42,9 +42,9 @@ class Reimbursement {
     description: string       // not null
     resolver: number          // foreign key -> User
     status: number            // foreign key -> ReimbursementStatus, not null
-    _type: number             // foreign key -> ReimbursementType
+    type: number             // foreign key -> ReimbursementType
 
-    constructor(id: number, author: number, amount: number, dateSub: number, dateRes: number, desc: string, resolver: number, status: number, typ: number) {
+    constructor(id: number, author: number, amount: number, dateSub: number, dateRes: number, desc: string, resolver: number, status: number, type: number) {
 
         this.reimbursementId = id;
         this.author = author;
@@ -54,19 +54,19 @@ class Reimbursement {
         this.description = desc;
         this.resolver = resolver;
         this.status = status;
-        this._type = typ;
+        this.type = type;
     }
 
     isValid(): boolean {
 
-        for (const val of this) {
-            if (val === null) return false;
+        for (const field in this) {
+            if (this[field] === null) return false;
         }
         return true;
     }
 }
 
-class Status {
+class ReimbursementStatus {
     statusId: number // primary key
     status: string   // not null, unique
 

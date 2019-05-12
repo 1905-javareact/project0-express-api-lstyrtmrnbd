@@ -1,9 +1,10 @@
-import { User, Role, Reimbursement } from './model'
+import { User, Role, Reimbursement, ReimbursementStatus } from './model'
 
-// Test state
-export { roles, users, reimbursements, reimCount }
+//// Test state
 
-let roles = {
+export { roles, users, reimbursements, statuses }
+
+const roles = {
 
     admin: new Role(0, 'admin'),
     user: new Role(1, 'user'),
@@ -17,6 +18,13 @@ const users: User[] = [
     new User(2, 'overseer', 'password', 'Sadie', 'Stick', 'taskmaster@organization.org', roles.finMan)
 
 ];
+
+const statuses = {
+
+    pending: new ReimbursementStatus(0, "Pending"),
+    approved: new ReimbursementStatus(1, "Approved"),
+    denied: new ReimbursementStatus(2, "Denied")
+};
 
 const reimbursements: Reimbursement[] = [
 
