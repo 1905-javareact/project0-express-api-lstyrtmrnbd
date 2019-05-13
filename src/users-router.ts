@@ -1,6 +1,5 @@
 import express from 'express'
 
-import { Role } from './model'
 import { roles, users } from './state'
 import { authRole, authUserOrRole } from './authorize';
 
