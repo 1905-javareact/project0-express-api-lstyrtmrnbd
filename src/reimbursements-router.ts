@@ -2,7 +2,7 @@ import express from 'express'
 
 import { Reimbursement } from './model'
 import { reimbursements, roles } from './state'
-import { validateUser, validateRole } from './users-router'
+import { authRole, authUserOrRole } from './authorize';
 
 export const reimbursementsRouter = express.Router();
 
@@ -29,24 +29,19 @@ reimbursementsRouter.get('', (req, res, next) => {
 // Find Reimbursements By Status
 reimbursementsRouter.get('/status/:statusId', (req, res, next) => {
 
+    authRole(req, res, roles.finMan);
+
     const id = parseInt(req.params.statusId);
-    const valid = validateRole(req, roles.finMan);
+    const found = reimbursements.filter(re => re.status === id);
 
-    if (!valid) {
+    if (found.length === 0) {
 
-        res.sendStatus(401);
+        res.status(404).send(`No reimbursements of status ${id} found`);
     } else {
 
-        const found = reimbursements.filter(re => re.status === id);
-        if (found.length === 0) {
-
-            res.status(404).send(`No reimbursements of status ${id} found`);
-        } else {
-
-            res.send(found.sort((a, b) => {
-                return a.dateSubmitted - b.dateSubmitted;
-            }));
-        }
+        res.send(found.sort((a, b) => {
+            return a.dateSubmitted - b.dateSubmitted;
+        }));
     }
 });
 
@@ -54,34 +49,28 @@ reimbursementsRouter.get('/status/:statusId', (req, res, next) => {
 reimbursementsRouter.get('/author/userId/:userId', (req, res, next) => {
 
     const id = parseInt(req.params.userId);
-    const valid = validateRole(req, roles.finMan) || validateUser(req, id);
 
-    if (!valid) {
+    authUserOrRole(req, res, id, roles.finMan);
 
-        res.sendStatus(401);
+    const found = reimbursements.filter(re => re.author === id);
+    if (found.length === 0) {
+
+        res.status(404).send(`No reimbursements authored by userId ${id}`);
     } else {
 
-        const found = reimbursements.filter(re => re.author === id);
-        if (found.length === 0) {
-
-            res.status(404).send(`No reimbursements authored by userId ${id}`);
-        } else {
-
-            res.send(found.sort((a, b) => {
-                return a.dateSubmitted - b.dateSubmitted;
-            }));
-        }
+        res.send(found.sort((a, b) => {
+            return a.dateSubmitted - b.dateSubmitted;
+        }));
     }
 });
 
 // Update Reimbursement
 reimbursementsRouter.patch('', (req, res, next) => {
 
-    const valid = validateRole(req, roles.finMan);
+    authRole(req, res, roles.finMan);
+
     const newReim = req.body;
     const oldReim = reimbursements.find(re => re.reimbursementId === newReim.reimbursementId);
-
-    if (!valid) res.sendStatus(401);
 
     if (!oldReim) {
 
