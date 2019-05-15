@@ -25,5 +25,6 @@ function authRole(req, res, role: Role): void {
 
 function authUserOrRole(req, res, userId: number, role: Role): void {
 
-    if (!validUser(req, userId) || !validRole(req, role)) res.sendStatus(401);
+    const valid = validUser(req, userId) || validRole(req, role);
+    if (!valid) res.sendStatus(401);
 }
