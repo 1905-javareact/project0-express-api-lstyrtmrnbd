@@ -2,13 +2,20 @@ import express from 'express'
 
 import { roles, users } from '../data/state'
 import { authRole, authUserOrRole } from './authorize';
+import { getAllUsersService } from '../data/users-service';
 
 export const usersRouter = express.Router();
 
 // Find Users
-usersRouter.get('', [authRole(roles.finMan), (req, res, next) => {
+usersRouter.get('', [authRole(roles.finMan), async (req, res, next) => {
 
-    res.send(users);
+    const result = await getAllUsersService();
+
+    if (!result) {
+        res.sendStatus(500);
+    } else {
+        res.send(result);
+    }
 }]);
 
 function unwrapId(req): number {
