@@ -27,9 +27,7 @@ reimbursementsRouter.get('', (req, res, next) => {
 });
 
 // Find Reimbursements By Status
-reimbursementsRouter.get('/status/:statusId', (req, res, next) => {
-
-    authRole(req, res, roles.finMan);
+reimbursementsRouter.get('/status/:statusId', [authRole(roles.finMan), (req, res, next) => {
 
     const id = parseInt(req.params.statusId);
     const found = reimbursements.filter(re => re.status === id);
@@ -43,14 +41,17 @@ reimbursementsRouter.get('/status/:statusId', (req, res, next) => {
             return a.dateSubmitted - b.dateSubmitted;
         }));
     }
-});
+}]);
+
+function unwrapId(req): number {
+
+    return parseInt(req.params.userId);
+}
 
 // Find Reimbursements By User
-reimbursementsRouter.get('/author/userId/:userId', (req, res, next) => {
+reimbursementsRouter.get('/author/userId/:userId', [authUserOrRole(unwrapId, roles.finMan), (req, res, next) => {
 
-    const id = parseInt(req.params.userId);
-
-    authUserOrRole(req, res, id, roles.finMan);
+    const id: number = unwrapId(req);
 
     const found = reimbursements.filter(re => re.author === id);
     if (found.length === 0) {
@@ -62,12 +63,10 @@ reimbursementsRouter.get('/author/userId/:userId', (req, res, next) => {
             return a.dateSubmitted - b.dateSubmitted;
         }));
     }
-});
+}]);
 
 // Update Reimbursement
-reimbursementsRouter.patch('', (req, res, next) => {
-
-    authRole(req, res, roles.finMan);
+reimbursementsRouter.patch('', [authRole(roles.finMan), (req, res, next) => {
 
     const newReim = req.body;
     const oldReim = reimbursements.find(re => re.reimbursementId === newReim.reimbursementId);
@@ -80,4 +79,4 @@ reimbursementsRouter.patch('', (req, res, next) => {
         for (let field in newReim) { oldReim[field] = oldReim[field] && newReim[field]; }
         res.send(oldReim);
     }
-});
+}]);

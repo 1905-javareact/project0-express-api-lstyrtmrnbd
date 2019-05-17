@@ -6,28 +6,28 @@ import { authRole, authUserOrRole } from './authorize';
 export const usersRouter = express.Router();
 
 // Find Users
-usersRouter.get('', (req, res, next) => {
+usersRouter.get('', [authRole(roles.finMan), (req, res, next) => {
 
-    authRole(req, res, roles.finMan);
     res.send(users);
-});
+}]);
+
+function unwrapId(req): number {
+
+    return parseInt(req.params.id);
+}
 
 // Find Users By Id
-usersRouter.get('/:id', (req, res, next) => {
+usersRouter.get('/:id', [authUserOrRole(unwrapId, roles.finMan), (req, res, next) => {
 
-    const id: number = parseInt(req.params.id);
-
-    authUserOrRole(req, res, id, roles.finMan);
+    const id: number = unwrapId(req);
 
     const found = users.filter(usr => usr.userId === id);
     found.length != 0 ? res.send(found) :
         res.status(404).send(`User of id ${id} not found`);
-});
+}]);
 
 // Update User
-usersRouter.patch('', (req, res, next) => {
-
-    authRole(req, res, roles.admin);
+usersRouter.patch('', [authRole(roles.admin), (req, res, next) => {
 
     const newUser = req.body;
     const oldUser = users.find(usr => usr.userId === newUser.userId);
@@ -40,4 +40,4 @@ usersRouter.patch('', (req, res, next) => {
         for (let field in newUser) { oldUser[field] = oldUser[field] && newUser[field]; }
         res.send(oldUser);
     }
-});
+}]);
