@@ -1,10 +1,10 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 
-import { middleLog, middleSes } from './middle'
-import { handleLogin } from './handlers'
-import { usersRouter } from './users-router'
-import { reimbursementsRouter } from './reimbursements-router'
+import { middleLog, middleSes } from './handlers/middle'
+import { handleLogin } from './handlers/handlers'
+import { usersRouter } from './handlers/users-router'
+import { reimbursementsRouter } from './handlers/reimbursements-router'
 
 //// Expenditure Reimbursement API
 

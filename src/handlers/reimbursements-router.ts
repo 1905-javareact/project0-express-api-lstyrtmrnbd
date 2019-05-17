@@ -1,7 +1,7 @@
 import express from 'express'
 
-import { Reimbursement } from './model'
-import { reimbursements, roles } from './state'
+import { Reimbursement } from '../data/model'
+import { reimbursements, roles } from '../data/state'
 import { authRole, authUserOrRole } from './authorize';
 
 export const reimbursementsRouter = express.Router();

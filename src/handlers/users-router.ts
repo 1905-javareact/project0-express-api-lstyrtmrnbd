@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { roles, users } from './state'
+import { roles, users } from '../data/state'
 import { authRole, authUserOrRole } from './authorize';
 
 export const usersRouter = express.Router();

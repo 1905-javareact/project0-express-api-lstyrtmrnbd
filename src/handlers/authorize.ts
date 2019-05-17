@@ -1,5 +1,5 @@
 
-import { Role } from './model'
+import { Role } from '../data/model'
 
 export { authUser, authRole, authUserOrRole }
 
