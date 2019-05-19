@@ -3,6 +3,7 @@ import express from 'express'
 import { Reimbursement } from '../data/model'
 import { reimbursements, roles } from '../data/state'
 import { authRole, authUserOrRole } from './authorize';
+import { getReimbursementsByStatusService, getReimbursementsByUserService } from '../data/reimbursements-service';
 
 export const reimbursementsRouter = express.Router();
 
@@ -27,10 +28,10 @@ reimbursementsRouter.get('', (req, res, next) => {
 });
 
 // Find Reimbursements By Status
-reimbursementsRouter.get('/status/:statusId', [authRole(roles.finMan), (req, res, next) => {
+reimbursementsRouter.get('/status/:statusId', [authRole(roles.finMan), async (req, res, next) => {
 
     const id = parseInt(req.params.statusId);
-    const found = reimbursements.filter(re => re.status === id);
+    const found = await getReimbursementsByStatusService(id);
 
     if (found.length === 0) {
 
@@ -49,11 +50,11 @@ function unwrapId(req): number {
 }
 
 // Find Reimbursements By User
-reimbursementsRouter.get('/author/userId/:userId', [authUserOrRole(unwrapId, roles.finMan), (req, res, next) => {
+reimbursementsRouter.get('/author/userId/:userId', [authUserOrRole(unwrapId, roles.finMan), async (req, res, next) => {
 
     const id: number = unwrapId(req);
+    const found = await getReimbursementsByUserService(id);
 
-    const found = reimbursements.filter(re => re.author === id);
     if (found.length === 0) {
 
         res.status(404).send(`No reimbursements authored by userId ${id}`);
