@@ -1,7 +1,7 @@
 import express from 'express'
 
-import { Reimbursement } from '../data/model'
-import { reimbursements, roles } from '../data/state'
+import { Reimbursement, roles } from '../data/model'
+import { reimbursements } from '../data/state'
 import { authRole, authUserOrRole } from './authorize';
 import { getReimbursementsByStatusService, getReimbursementsByUserService } from '../data/reimbursements-service';
 

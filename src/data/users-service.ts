@@ -1,7 +1,8 @@
-import { getAllUsers, getUserById } from './users-dao'
+import { getAllUsers, getUserById, getUserByUsername } from './users-dao'
 import { userFromDTO } from './users-dto';
+import { User } from './model';
 
-export { getAllUsersService, getUserByIdService }
+export { getAllUsersService, getUserByIdService, getUserByUsernameService, patchUserService }
 
 async function getAllUsersService() {
 
@@ -15,4 +16,16 @@ async function getUserByIdService(id: number) {
     const result = sanitary ? await getUserById(id) : [];
 
     return result.map(userFromDTO);
+}
+
+async function getUserByUsernameService(name: string) {
+
+    //sanitize by checking for spaces
+    const result = await getUserByUsername(name);
+
+    return result.map(userFromDTO);
+}
+
+async function patchUserService(user: User) {
+
 }

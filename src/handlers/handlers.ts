@@ -1,24 +1,17 @@
-import { users } from '../data/state'
+import { getUserByUsernameService } from '../data/users-service';
 
 export { handleLogin }
 
-function verifyUser(uname, passwd, user): boolean {
-
-    return user.username === uname &&
-        user.password == passwd;
-}
-
 // instead query DB
-function handleLogin(req, res, next) {
+async function handleLogin(req, res, next) {
 
     const { username, password } = req.body;
-    const user = users.find((usr) => {
-        return verifyUser(username, password, usr)
-    });
+    const found = await getUserByUsernameService(username);
 
-    if (user) {
-        req.session.user = user;
-        res.send(user);
+    if (found.length != 0 && found[0].password === password) {
+
+        req.session.user = found[0];
+        res.send(found[0]);
     } else {
         res.status(400).send({ message: "Invalid Credentials" });
     }

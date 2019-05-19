@@ -2,7 +2,7 @@ import { PoolClient } from 'pg'
 
 import { connectionPool } from './db-connection'
 
-export { getAllUsers, getUserById }
+export { getAllUsers, getUserById, getUserByUsername, patchUser }
 
 async function getAllUsers() {
 
@@ -48,4 +48,31 @@ async function getUserById(id: number) {
 
         client && client.release();
     }
+}
+
+async function getUserByUsername(name: string) {
+
+    let client: PoolClient;
+
+    const queryUsername = `SELECT * FROM reimbrs.users WHERE username = '${name}';`
+
+    try {
+
+        client = await connectionPool.connect();
+        const result = await client.query(queryUsername);
+        return result.rows;
+
+    } catch (err) {
+
+        console.log(err);
+        return null;
+
+    } finally {
+
+        client && client.release();
+    }
+}
+
+async function patchUser() {
+
 }

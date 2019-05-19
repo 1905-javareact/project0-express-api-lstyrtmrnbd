@@ -1,8 +1,9 @@
 import express from 'express'
 
-import { roles, users } from '../data/state'
+import { users } from '../data/state'
 import { authRole, authUserOrRole } from './authorize';
 import { getAllUsersService, getUserByIdService } from '../data/users-service';
+import { roles } from '../data/model'
 
 export const usersRouter = express.Router();
 
