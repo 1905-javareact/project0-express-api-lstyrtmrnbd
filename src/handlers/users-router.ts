@@ -2,7 +2,7 @@ import express from 'express'
 
 import { roles, users } from '../data/state'
 import { authRole, authUserOrRole } from './authorize';
-import { getAllUsersService } from '../data/users-service';
+import { getAllUsersService, getUserByIdService } from '../data/users-service';
 
 export const usersRouter = express.Router();
 
@@ -24,12 +24,12 @@ function unwrapId(req): number {
 }
 
 // Find Users By Id
-usersRouter.get('/:id', [authUserOrRole(unwrapId, roles.finMan), (req, res, next) => {
+usersRouter.get('/:id', [authUserOrRole(unwrapId, roles.finMan), async (req, res, next) => {
 
     const id: number = unwrapId(req);
 
-    const found = users.filter(usr => usr.userId === id);
-    found.length != 0 ? res.send(found) :
+    const found = await getUserByIdService(id);
+    found.length != 0 ? res.send(found[0]) :
         res.status(404).send(`User of id ${id} not found`);
 }]);
 
