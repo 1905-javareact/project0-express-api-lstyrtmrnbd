@@ -1,5 +1,7 @@
 
-export { User, Role, Reimbursement, ReimbursementStatus, ReimbursementType }
+export { User, Role, roles, getRole, Reimbursement, ReimbursementStatus, ReimbursementType }
+
+/// Users----------------------------------
 
 class User {
     userId: number     // primary key
@@ -32,6 +34,26 @@ class Role {
         this.role = role;
     }
 }
+
+const roles = {
+
+    admin: new Role(1, 'admin'),
+    user: new Role(2, 'user'),
+    finMan: new Role(3, 'finance-manager')
+}
+
+function getRole(id: number) {
+
+    let result = null;
+
+    for (const role in roles) {
+        if (roles[role].roleId === id) result = roles[role];
+    }
+
+    return result;
+}
+
+/// Reimbursements-------------------------
 
 class Reimbursement {
     reimbursementId: number   // primary key
