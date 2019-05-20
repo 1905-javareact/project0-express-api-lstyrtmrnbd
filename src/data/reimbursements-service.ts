@@ -1,7 +1,8 @@
-import { getReimbursementsByStatus, getReimbursementsByUser } from "./reimbursements-dao";
+import { getReimbursementsByStatus, getReimbursementsByUser, patchReimbursement, getReimbursementById } from "./reimbursements-dao";
 import { reimbursementFromDTO } from "./reimbursements-dto";
+import { Reimbursement } from './model'
 
-export { getReimbursementsByStatusService, getReimbursementsByUserService }
+export { getReimbursementsByStatusService, getReimbursementsByUserService, patchReimbursementService }
 
 async function getReimbursementsByStatusService(statusId: number) {
 
@@ -17,4 +18,35 @@ async function getReimbursementsByUserService(userId: number) {
 
     const result = sanitary ? await getReimbursementsByUser(userId) : [];
     return result.map(reimbursementFromDTO);
+}
+
+async function getReimbursementByIdService(id: number) {
+
+    const sanitary = typeof (id) === 'number' && !isNaN(id);
+    const result = sanitary ? await getReimbursementById(id) : [];
+
+    return result.map(reimbursementFromDTO);
+
+}
+
+// newReim is a Reimbursement-like object
+async function patchReimbursementService(newReim) {
+
+    const oldReims = await getReimbursementByIdService(newReim.reimbursementId);
+
+    if (oldReims.length === 0) {
+
+        return false;
+    } else {
+
+        const oldReim: Reimbursement = oldReims[0];
+
+        for (let field in newReim) {
+            oldReim[field] = oldReim[field] && newReim[field];
+        }
+
+        const patch = await patchReimbursement(oldReim);
+
+        return patch ? oldReim : false;
+    }
 }

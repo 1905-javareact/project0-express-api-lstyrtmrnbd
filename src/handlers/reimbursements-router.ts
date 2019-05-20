@@ -3,7 +3,7 @@ import express from 'express'
 import { Reimbursement, roles } from '../data/model'
 import { reimbursements } from '../data/state'
 import { authRole, authUserOrRole } from './authorize';
-import { getReimbursementsByStatusService, getReimbursementsByUserService } from '../data/reimbursements-service';
+import { getReimbursementsByStatusService, getReimbursementsByUserService, patchReimbursementService } from '../data/reimbursements-service';
 
 export const reimbursementsRouter = express.Router();
 
@@ -67,17 +67,16 @@ reimbursementsRouter.get('/author/userId/:userId', [authUserOrRole(unwrapId, rol
 }]);
 
 // Update Reimbursement
-reimbursementsRouter.patch('', [authRole(roles.finMan), (req, res, next) => {
+reimbursementsRouter.patch('', [authRole(roles.finMan), async (req, res, next) => {
 
     const newReim = req.body;
-    const oldReim = reimbursements.find(re => re.reimbursementId === newReim.reimbursementId);
+    const oldReim = await patchReimbursementService(newReim);
 
     if (!oldReim) {
 
         res.status(404).send(`Reimbursement of id ${newReim.reimbursementId} not found`)
     } else {
 
-        for (let field in newReim) { oldReim[field] = oldReim[field] && newReim[field]; }
         res.send(oldReim);
     }
 }]);
