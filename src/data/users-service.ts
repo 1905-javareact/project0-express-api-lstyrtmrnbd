@@ -1,4 +1,4 @@
-import { getAllUsers, getUserById, getUserByUsername } from './users-dao'
+import { getAllUsers, getUserById, getUserByUsername, patchUser } from './users-dao'
 import { userFromDTO } from './users-dto';
 import { User } from './model';
 
@@ -20,12 +20,31 @@ async function getUserByIdService(id: number) {
 
 async function getUserByUsernameService(name: string) {
 
-    //sanitize by checking for spaces
+    // sanitize by checking for spaces
     const result = await getUserByUsername(name);
 
     return result.map(userFromDTO);
 }
 
-async function patchUserService(user: User) {
+// newUser is a User-like object, containing at least an id
+async function patchUserService(newUser) {
 
+    const oldUsers = await getUserByIdService(newUser.userId);
+
+    if (oldUsers.length === 0) {
+
+        return false;
+    } else {
+
+        const oldUser: User = oldUsers[0];
+
+        for (let field in newUser) {
+            oldUser[field] = oldUser[field] && newUser[field];
+        }
+
+        // the actual db update
+        const patch = await patchUser(oldUser);
+
+        return patch ? oldUser : false;
+    }
 }

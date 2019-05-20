@@ -1,6 +1,8 @@
 import { PoolClient } from 'pg'
 
 import { connectionPool } from './db-connection'
+import { userToDTO } from './users-dto'
+import { User } from './model'
 
 export { getAllUsers, getUserById, getUserByUsername, patchUser }
 
@@ -73,6 +75,27 @@ async function getUserByUsername(name: string) {
     }
 }
 
-async function patchUser() {
+// newUser is a fully populated User object
+async function patchUser(newUser: User) {
 
+    let client: PoolClient;
+
+    const dto = userToDTO(newUser);
+    const updateUser = `UPDATE reimbrs.users SET username = '${dto.username}', passwd = '${dto.passwd}', first_name = '${dto.first_name}', last_name = '${dto.last_name}', email = '${dto.email}', role_id = ${dto.role_id} WHERE user_id = ${dto.user_id};`;
+
+    try {
+
+        client = await connectionPool.connect();
+        const result = await client.query(updateUser);
+        return result;
+
+    } catch (err) {
+
+        console.log(err);
+        return null;
+
+    } finally {
+
+        client && client.release();
+    }
 }

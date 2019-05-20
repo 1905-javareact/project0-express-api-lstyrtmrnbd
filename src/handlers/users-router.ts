@@ -1,8 +1,7 @@
 import express from 'express'
 
-import { users } from '../data/state'
 import { authRole, authUserOrRole } from './authorize';
-import { getAllUsersService, getUserByIdService } from '../data/users-service';
+import { getAllUsersService, getUserByIdService, patchUserService } from '../data/users-service';
 import { roles } from '../data/model'
 
 export const usersRouter = express.Router();
@@ -35,17 +34,16 @@ usersRouter.get('/:id', [authUserOrRole(unwrapId, roles.finMan), async (req, res
 }]);
 
 // Update User
-usersRouter.patch('', [authRole(roles.admin), (req, res, next) => {
+usersRouter.patch('', [authRole(roles.admin), async (req, res, next) => {
 
     const newUser = req.body;
-    const oldUser = users.find(usr => usr.userId === newUser.userId);
+    const oldUser = await patchUserService(newUser);
 
     if (!oldUser) {
 
         res.status(404).send(`User of id ${newUser.userId} not found`);
     } else {
 
-        for (let field in newUser) { oldUser[field] = oldUser[field] && newUser[field]; }
         res.send(oldUser);
     }
 }]);
