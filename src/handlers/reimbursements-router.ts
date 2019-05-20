@@ -1,9 +1,8 @@
 import express from 'express'
 
 import { Reimbursement, roles } from '../data/model'
-import { reimbursements } from '../data/state'
 import { authRole, authUserOrRole } from './authorize';
-import { getReimbursementsByStatusService, getReimbursementsByUserService, patchReimbursementService } from '../data/reimbursements-service';
+import { getReimbursementsByStatusService, getReimbursementsByUserService, patchReimbursementService, insertReimbursementService, getReimbursementsService } from '../data/reimbursements-service';
 
 export const reimbursementsRouter = express.Router();
 
@@ -12,19 +11,23 @@ export const reimbursementsRouter = express.Router();
 reimbursementsRouter.post('', (req, res, next) => {
 
     const author = req.session.user.userId;
-    const id = reimbursements.length;
     const sentReim: Reimbursement = req.body;
 
-    const newReim = new Reimbursement(id, author, sentReim.amount, Date.now(), 0, sentReim.description, 0, 0, sentReim.type);
+    const newReim = new Reimbursement(0, author, sentReim.amount, Date.now(), 0, sentReim.description, 3, 1, sentReim.type);
 
-    reimbursements.push(newReim);
-    res.send(newReim);
+    const inserted = insertReimbursementService(newReim);
+
+    if (!inserted) {
+        res.sendStatus(500);
+    } else {
+        res.send(newReim);
+    }
 });
 
 // Dump all reimbursements for testing
-reimbursementsRouter.get('', (req, res, next) => {
+reimbursementsRouter.get('', async (req, res, next) => {
 
-    res.send(reimbursements);
+    res.send(await getReimbursementsService());
 });
 
 // Find Reimbursements By Status

@@ -1,8 +1,14 @@
-import { getReimbursementsByStatus, getReimbursementsByUser, patchReimbursement, getReimbursementById } from "./reimbursements-dao";
+import { getReimbursementsByStatus, getReimbursementsByUser, patchReimbursement, getReimbursementById, insertReimbursement, getReimbursements } from "./reimbursements-dao";
 import { reimbursementFromDTO } from "./reimbursements-dto";
 import { Reimbursement } from './model'
 
-export { getReimbursementsByStatusService, getReimbursementsByUserService, patchReimbursementService }
+export { getReimbursementsByStatusService, getReimbursementsByUserService, patchReimbursementService, insertReimbursementService, getReimbursementsService }
+
+async function getReimbursementsService() {
+
+    const result = await getReimbursements();
+    return result.map(reimbursementFromDTO);
+}
 
 async function getReimbursementsByStatusService(statusId: number) {
 
@@ -49,4 +55,10 @@ async function patchReimbursementService(newReim) {
 
         return patch ? oldReim : false;
     }
+}
+
+async function insertReimbursementService(newReim: Reimbursement) {
+
+    const inserted = await insertReimbursement(newReim);
+    return inserted;
 }

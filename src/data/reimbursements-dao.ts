@@ -4,7 +4,30 @@ import { connectionPool } from './db-connection'
 import { Reimbursement } from './model';
 import { reimbursementToDTO } from './reimbursements-dto';
 
-export { getReimbursementsByStatus, getReimbursementsByUser, getReimbursementById, patchReimbursement }
+export { getReimbursementsByStatus, getReimbursementsByUser, getReimbursementById, patchReimbursement, insertReimbursement, getReimbursements }
+
+async function getReimbursements() {
+
+    let client: PoolClient;
+
+    const queryStatusId = `SELECT * FROM reimbrs.reimbursements;`
+
+    try {
+
+        client = await connectionPool.connect();
+        const result = await client.query(queryStatusId);
+        return result.rows;
+
+    } catch (err) {
+
+        console.log(err);
+        return null;
+
+    } finally {
+
+        client && client.release();
+    }
+}
 
 async function getReimbursementsByStatus(id: number) {
 
@@ -86,6 +109,30 @@ async function patchReimbursement(newReim: Reimbursement) {
 
         client = await connectionPool.connect();
         const result = await client.query(updateReim);
+        return result;
+
+    } catch (err) {
+
+        console.log(err);
+        return null;
+
+    } finally {
+
+        client && client.release();
+    }
+}
+
+async function insertReimbursement(newReim: Reimbursement) {
+
+    let client: PoolClient;
+
+    const dto = reimbursementToDTO(newReim);
+    const insertReim = `INSERT INTO reimbrs.reimbursements VALUES(default, ${dto.author}, ${dto.amount}, ${dto.date_submit}, ${dto.date_resolve}, '${dto.description}', ${dto.resolver}, ${dto.status_id}, ${dto.type_id});`;
+
+    try {
+
+        client = await connectionPool.connect();
+        const result = await client.query(insertReim);
         return result;
 
     } catch (err) {
