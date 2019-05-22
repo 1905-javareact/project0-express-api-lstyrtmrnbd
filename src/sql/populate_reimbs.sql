@@ -1,6 +1,6 @@
 set schema 'reimbrs';
 
-begin;
+--begin;
 --rollback;
 
 insert into roles values
@@ -40,4 +40,4 @@ insert into reimbursements values
 
 select * from reimbursements;
 
-commit;
+--commit;

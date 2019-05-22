@@ -1,14 +1,13 @@
 set schema 'reimbrs';
 
-begin;
+--begin;
 --rollback;
 
 /*
- *     roleId: number     // primary key
- *     role: string       // not null, unique
+ *  roleId: number     // primary key
+ *  role: string       // not null, unique
  */
 
-drop table roles;
 create table roles(
 role_id serial primary key,
 role_name text unique not null
@@ -24,7 +23,6 @@ role_name text unique not null
  *  role: Role         // not null
  */
 
-drop table users;
 create table users(
 user_id serial primary key,
 username text unique not null,
@@ -40,7 +38,6 @@ role_id integer references roles (role_id) not null
  *  status: string   // not null, unique
  */
 
-drop table reimbrs_status;
 create table reimbrs_status(
 status_id serial primary key,
 status_name text unique not null
@@ -51,7 +48,6 @@ status_name text unique not null
  *  type: string   // not null, unique
  */
 
-drop table reimbrs_type;
 create table reimbrs_type(
 type_id serial primary key,
 type_name text unique not null
@@ -69,7 +65,6 @@ type_name text unique not null
  *  type: number              // foreign key -> ReimbursementType
  */
 
-drop table reimbursements;
 create table reimbursements(
 reimbrs_id serial primary key,
 author integer references users (user_id) not null,
@@ -82,4 +77,4 @@ status_id integer references reimbrs_status (status_id) not null,
 type_id integer references reimbrs_type (type_id)
 );
 
-commit;
+--commit;
