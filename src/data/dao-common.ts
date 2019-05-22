@@ -21,6 +21,6 @@ async function queryParams(query: string, ...rest) {
 
     } finally {
 
-        client && client.release;
+        client && client.release();
     }
 }
