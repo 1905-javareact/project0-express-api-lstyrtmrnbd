@@ -29,8 +29,8 @@ async function getReimbursementsByUserService(userId: number) {
 async function getReimbursementByIdService(id: number) {
 
     const sanitary = typeof (id) === 'number' && !isNaN(id);
-    const result = sanitary ? await getReimbursementById(id) : [];
 
+    const result = sanitary ? await getReimbursementById(id) : [];
     return result.map(reimbursementFromDTO);
 
 }

@@ -1,13 +1,13 @@
 import express from 'express'
 
-import { authRole, authUserOrRole } from './authorize';
+import { authRoles, authUserOrRoles } from './authorize';
 import { getAllUsersService, getUserByIdService, patchUserService } from '../data/users-service';
 import { roles } from '../data/model'
 
 export const usersRouter = express.Router();
 
 // Find Users
-usersRouter.get('', [authRole(roles.finMan), async (req, res, next) => {
+usersRouter.get('', [authRoles([roles.finMan, roles.admin]), async (req, res, next) => {
 
     const result = await getAllUsersService();
 
@@ -24,7 +24,7 @@ function unwrapId(req): number {
 }
 
 // Find Users By Id
-usersRouter.get('/:id', [authUserOrRole(unwrapId, roles.finMan), async (req, res, next) => {
+usersRouter.get('/:id', [authUserOrRoles(unwrapId, [roles.finMan, roles.admin]), async (req, res, next) => {
 
     const id: number = unwrapId(req);
 
@@ -34,7 +34,7 @@ usersRouter.get('/:id', [authUserOrRole(unwrapId, roles.finMan), async (req, res
 }]);
 
 // Update User
-usersRouter.patch('', [authRole(roles.admin), async (req, res, next) => {
+usersRouter.patch('', [authRoles([roles.admin]), async (req, res, next) => {
 
     const newUser = req.body;
     const oldUser = await patchUserService(newUser);

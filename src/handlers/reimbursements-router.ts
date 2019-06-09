@@ -1,7 +1,7 @@
 import express from 'express'
 
 import { Reimbursement, roles } from '../data/model'
-import { authRole, authUserOrRole } from './authorize';
+import { authRoles, authUserOrRoles } from './authorize';
 import { getReimbursementsByStatusService, getReimbursementsByUserService, patchReimbursementService, insertReimbursementService, getReimbursementsService } from '../data/reimbursements-service';
 
 export const reimbursementsRouter = express.Router();
@@ -31,7 +31,7 @@ reimbursementsRouter.get('', async (req, res, next) => {
 });
 
 // Find Reimbursements By Status
-reimbursementsRouter.get('/status/:statusId', [authRole(roles.finMan), async (req, res, next) => {
+reimbursementsRouter.get('/status/:statusId', [authRoles([roles.admin, roles.finMan]), async (req, res, next) => {
 
     const id = parseInt(req.params.statusId);
     const found = await getReimbursementsByStatusService(id);
@@ -53,7 +53,7 @@ function unwrapId(req): number {
 }
 
 // Find Reimbursements By User
-reimbursementsRouter.get('/author/userId/:userId', [authUserOrRole(unwrapId, roles.finMan), async (req, res, next) => {
+reimbursementsRouter.get('/author/userId/:userId', [authUserOrRoles(unwrapId, [roles.finMan, roles.admin]), async (req, res, next) => {
 
     const id: number = unwrapId(req);
     const found = await getReimbursementsByUserService(id);
@@ -70,7 +70,7 @@ reimbursementsRouter.get('/author/userId/:userId', [authUserOrRole(unwrapId, rol
 }]);
 
 // Update Reimbursement
-reimbursementsRouter.patch('', [authRole(roles.finMan), async (req, res, next) => {
+reimbursementsRouter.patch('', [authRoles([roles.finMan, roles.admin]), async (req, res, next) => {
 
     const newReim = req.body;
     const oldReim = await patchReimbursementService(newReim);

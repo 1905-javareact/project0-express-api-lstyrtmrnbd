@@ -1,7 +1,8 @@
 import express from 'express'
 import bodyParser from 'body-parser'
+import cors from 'cors'
 
-import { middleLog, middleSes, middleCors } from './handlers/middle'
+import { middleLog, middleSes } from './handlers/middle'
 import { handleLogin } from './handlers/handlers'
 import { usersRouter } from './handlers/users-router'
 import { reimbursementsRouter } from './handlers/reimbursements-router'
@@ -12,10 +13,15 @@ const exp = express();
 
 /// Routing stack
 
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true
+}
+
+exp.use(cors(corsOptions));
 exp.use(bodyParser.json());
 exp.use(middleLog);
 exp.use(middleSes);
-exp.use(middleCors);
 
 exp.post('/login', handleLogin);
 exp.use('/users', usersRouter);
